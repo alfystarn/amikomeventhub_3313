@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner; // INI YANG KURANG, WAJIB ADA!
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Fungsi ini memerintahkan Laravel untuk membuka file resources/views/welcome.blade.php
-        return view('welcome');
+        $partners = Partner::all();
+        
+        return view('welcome', compact('partners'));
     }
 }
