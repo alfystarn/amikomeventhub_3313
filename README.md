@@ -1,5 +1,9 @@
-Nama : Alif Ya Asta Rini
-NIM : 24.12.3313
-Link : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/katalog
+**Nama** : Alif Ya Asta Rini
+**NIM**  : 24.12.3313
 
-Link Categories : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/admin/categories
+Tautan Live (Laravel Cloud)
+Halaman Katalog/Utama : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud
+
+Halaman Kategori Admin: https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/admin/categories
+
+Halaman Kategori Seminar IT, Tugas 6 : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/katalog?category=Seminar
