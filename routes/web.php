@@ -1,39 +1,41 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-// Import Controller Utama
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\EventController;
-
-// Import Controller Admin (Sesuai Poin 5.4.2 Halaman 32)
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\EventController as EventAdminController;
-use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes - Amikom Event Hub
+| Web Routes - AmikomEventHub
 |--------------------------------------------------------------------------
 */
 
-// --- AREA PENGGUNA (USER AREA) ---
+// Rute Publik Utama 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/event/{id}', [EventController::class, 'show'])->name('events.show');
-Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
-Route::get('/my-ticket', [EventController::class, 'ticket'])->name('ticket');
 
+// ==========================================
+// BLOK KODE RUTENYA ADMIN 
+// ==========================================
 
-// --- AREA ADMIN (ADMIN PANEL) ---
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
+// Grouping untuk URL berawalan /admin
 Route::prefix('admin')->name('admin.')->group(function () {
     
-    // Dashboard: /admin
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Poin 5.4.2: Resource Route untuk Kelola Event
-    Route::resource('events', EventAdminController::class);
-    
-    // Rute Tambahan
-    Route::get('/transactions', [EventAdminController::class, 'transactions'])->name('transactions.index');
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    // Rute Login bebas akses
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.post');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Mengamankan Route Administrasi di balik tembok (Middleware)
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('events', EventController::class);
+        Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    });
 });
