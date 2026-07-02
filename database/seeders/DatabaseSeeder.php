@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Seeder; // Hanya baris bawaan ini yang ada di atas
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Akun Admin Utama
+        // 1. Akun Admin Utama (Sesuai Persis Instruksi Modul 8)
         \App\Models\User::create([
             'name' => 'Admin Amikom',
             'email' => 'admin@amikom.ac.id',
@@ -16,18 +16,18 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 2. Insert Kategori Event
+        // 2. Insert Kategori Event (Menjaga Tugas Pertemuan Sebelumnya)
         $category = \App\Models\Category::create([
             'name' => 'Seminar IT',
             'slug' => 'seminar-it',
         ]);
 
         $category2 = \App\Models\Category::firstOrCreate([
-            'name' => 'Entertaiment',
-            'slug' => 'entertaiment',
+            'name' => 'Entertainment',
+            'slug' => 'entertainment',
         ]);
 
-        // 3. Insert Sampel Events (Total 6 Event untuk Tugas)
+        // 3. Insert Sampel Events (Total 6 Event Tugas Sebelumnya)
         
         // Event 1
         \App\Models\Event::create([
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-3.png',
         ]);
 
-        // Event 4 (Tambahan Latihan)
+        // Event 4
         \App\Models\Event::create([
             'category_id' => $category->id,
             'title' => 'UI/UX Masterclass',
@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-4.png',
         ]);
 
-        // Event 5 (Tambahan Latihan)
+        // Event 5
         \App\Models\Event::create([
             'category_id' => $category2->id,
             'title' => 'E-Sport U-Champ',
@@ -89,7 +89,7 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-5.png',
         ]);
 
-        // Event 6 (Tambahan Latihan)
+        // Event 6
         \App\Models\Event::create([
             'category_id' => $category->id,
             'title' => 'Workshop Laravel Advanced',
