@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\TransactionController;
 // Rute Publik Utama 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+
+
 // ==========================================
 // BLOK KODE RUTENYA ADMIN 
 // ==========================================

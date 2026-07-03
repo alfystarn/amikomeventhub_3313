@@ -45,7 +45,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Tanggal & Waktu</label>
-                <input type="datetime-local" name="date" value="{{ old('date', $event->date->format('Y-m-d\TH:i')) }}" 
+                {{-- PERBAIKAN: Format tanggal diubah ke format string HTML5 agar kebal dari error sistem --}}
+                <input type="datetime-local" name="date" value="{{ old('date', $event->date ? date('Y-m-d\TH:i', strtotime($event->date)) : '') }}" 
                     class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium" required>
                 @error('date') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>

@@ -1,23 +1,22 @@
+<?php
+
+namespace App\Http\Controllers;
+
 use App\Models\Event;
 use App\Models\Category;
-use App\Models\Partner;
 use Illuminate\Http\Request;
 
-Route::get('/', function (Request $request) {
-    $categories = Category::all();
-    $partners = Partner::all(); // Mengambil data partner agar tidak kosong
-
-    // Ambil query filter dari URL string (?category=slug)
-    $query = Event::with('category');
-
-    if ($request->has('category') && $request->category != '') {
-        $query->whereHas('category', function($q) use ($request) {
-            $q->where('slug', $request->category);
-        });
+class EventController extends Controller
+{
+    /**
+     * Menampilkan Detail Event Secara Dinamis
+     */
+    public function show(\App\Models\Event $event)
+    {
+        // Mengambil daftar kategori untuk keperluan menu footer/navigasi
+        $categories = Category::all();
+        
+        // Me-render view dengan membawa data kategori dan data spesifik acara tersebut
+        return view('event-detail', compact('categories', 'event'));
     }
-
-    // Mengambil semua data yang lolos filter tanpa dibatasi take(2)
-    $events = $query->get(); 
-
-    return view('welcome', compact('categories', 'events', 'partners'));
-});
+}

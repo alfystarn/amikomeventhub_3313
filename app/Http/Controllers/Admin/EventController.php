@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -16,40 +17,37 @@ class EventController extends Controller
         return view('admin.events.index', compact('events'));
     }
 
-    // Menampilkan Form Tambah Event (Poin 5.4.5)
+    // Menampilkan Form Tambah Event
     public function create()
     {
-        // Mengambil semua data kategori untuk dropdown di form
         $categories = Category::all();
-        
         return view('admin.events.create', compact('categories'));
     }
 
-    // Menyimpan Data Event Baru (Poin 5.4.5)
+    // Menyimpan Data Event Baru dengan Upload Gambar Poster
     public function store(Request $request)
     {
-        // 1. Menerapkan validasi data request dari pengguna
-        $data = $request->validate([
-            'category_id' => 'required',
+         $data = $request->validate([
+            'category_id' => 'required|exists:categories,id',
             'title'       => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'date'        => 'required|date',
             'location'    => 'required|string|max:255',
-            'price'       => 'required|numeric',
-            'stock'       => 'required|numeric'
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|numeric|min:1',
+            'poster'      => 'nullable|image|max:2048'
         ]);
 
-        // 2. Menyimpan data yang telah divalidasi ke database menggunakan Model
-        Event::create($data);
-
-        // 3. Kembali ke halaman index dengan pesan sukses
-        return redirect()->route('admin.events.index')
-                         ->with('success', 'Data Event berhasil ditambahkan.');
+        if ($request->hasFile('poster')) {
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
+     
+         Event::create($data);
+         return redirect()->route('admin.events.index')->with('success', 'Data Event berhasil ditambahkan.');
     }
 
     /**
-     * 5.4.7. Implementasi Update - Menampilkan Form Edit
-     * Menampilkan form berisi data lama untuk diubah.
+     * Menampilkan Form Edit
      */
     public function edit(Event $event)
     {
@@ -58,46 +56,53 @@ class EventController extends Controller
     }
 
     /**
-     * 5.4.7. Implementasi Update - Menyimpan Perubahan
-     * Menyimpan hasil pembaruan data ke database.
+     * UPDATE BERHASIL: Menyimpan Perubahan Data & Manajemen Penghapusan File Lama
      */
     public function update(Request $request, Event $event)
     {
-        // Validasi data yang masuk
         $data = $request->validate([
-            'category_id' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'title'       => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'date'        => 'required|date',
             'location'    => 'required|string|max:255',
-            'price'       => 'required|numeric',
-            'stock'       => 'required|numeric'
-        ]);
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|numeric|min:1',
+            'poster'      => 'nullable|image|max:2048'
+        ]); 
 
-        // Memperbarui data event di database
+        if ($request->hasFile('poster')) {
+            // Hapus gambar lama dari storage jika sebelumnya sudah memiliki poster
+            if ($event->poster_path) {
+                Storage::disk('public')->delete($event->poster_path);
+            }
+            // Upload gambar baru
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
+
         $event->update($data);
-
-        return redirect()->route('admin.events.index')
-                         ->with('success', 'Rincian data event berhasil diperbarui.');
+        return redirect()->route('admin.events.index')->with('success', 'Event berhasil diperbarui.');
     }
 
     /**
-     * 5.4.6. Implementasi Delete - Menghapus Event
-     * Operasi penghapusan data secara permanen menggunakan Directive metode DELETE.
+     * PERUBAHAN DI SINI: Menghapus Event secara permanen dan menghapus gambar di storage
      */
     public function destroy(Event $event)
     {
-        // Menghapus data event
-        $event->delete();
+        // TUGAS 9.5: Cek jika data event memiliki path poster di database
+        if ($event->poster_path) {
+            // Hapus file gambar fisik dari storage/app/public/posters
+            Storage::disk('public')->delete($event->poster_path);
+        }
 
-        // Redirect kembali ke index dengan pesan sukses sesuai modul
-        return redirect()->route('admin.events.index')
-                         ->with('success', 'Data event berhasil dihapus secara permanen.');
+        // Baru setelah itu hapus data di database
+        $event->delete();
+        
+        return redirect()->route('admin.events.index')->with('success', 'Data event dan berkas poster berhasil dihapus secara permanen.');
     }
 
     public function transactions()
     {
-        // Memanggil view yang ada di resources/views/admin/transactions/index.blade.php
         return view('admin.transactions');
     }
 }

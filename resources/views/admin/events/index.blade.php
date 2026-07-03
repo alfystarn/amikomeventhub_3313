@@ -29,11 +29,10 @@
                         {{ $loop->iteration }}
                     </td>
                     <td class="px-8 py-6">
-                        @if($event->poster_path)
-                            <img src="{{ asset('storage/' . $event->poster_path) }}" class="w-16 h-20 rounded-xl object-cover shadow-sm">
-                        @else
-                            <img src="https://placehold.co/16x20" class="w-16 h-20 rounded-xl object-cover shadow-sm">
-                        @endif
+                        {{-- SESUAI MODUL: Ditambahkan pengecekan eksistensi file lewat facade Storage --}}
+                        <img src="{{ ($event->poster_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($event->poster_path))
+                                     ? asset('storage/' . $event->poster_path)
+                                     : 'https://placehold.co/16x20' }}" class="w-16 h-20 rounded-xl object-cover shadow-sm">
                     </td>
                     <td class="px-8 py-6">
                         <p class="font-black text-slate-800">{{ $event->title }}</p>
@@ -48,14 +47,14 @@
                     </td>
                     <td class="px-8 py-6">
                         <div class="flex gap-2">
-                            {{-- Tombol Edit Sesuai Langkah 3 --}}
+                            {{-- Tombol Edit --}}
                             <a href="{{ route('admin.events.edit', $event->id) }}" class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </a>
 
-                            {{-- Tombol Hapus Berbalut Form --}}
+                            {{-- Tombol Hapus --}}
                             <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus acara ini?');">
                                 @csrf
                                 @method('DELETE')
