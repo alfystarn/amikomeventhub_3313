@@ -10,3 +10,7 @@ Halaman Kategori Seminar IT, Tugas 6 : https://amikomeventhub-3313-main-6e1nxz.f
 
 Tugas 8 (Login Admin) : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/admin/login
 Tugas 8 (Dashboard Admin) : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/admin/dashboard
+
+Tugas 12 : https://amikomeventhub-3313-main-6e1nxz.free.laravel.cloud/admin/dashboard
+
+Tautan Pengujian Webhook (VS Code Port Forwarding): https://glbmwmmx-8000.asse.devtunnels.ms/
