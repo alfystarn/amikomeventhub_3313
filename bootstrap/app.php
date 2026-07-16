@@ -17,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
         
+        // --- TAMBAHKAN DI SINI ---
+        // Mengecualikan route webhook Midtrans dari blokir CSRF
+        $middleware->validateCsrfTokens(except: [
+            '/midtrans/callback',
+        ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
